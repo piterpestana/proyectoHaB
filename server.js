@@ -45,7 +45,7 @@ const server = express(); // necesito esto?
 
 const { register, login, updateUser } = require('./routes/users');
 const { isAuthenticated } = require('./routes/auth')
-const { add, list, emailRequest, emailResponse } = require('./routes/events');
+const { add, list, addScore, emailRequest, emailResponse } = require('./routes/events');
 
 const port = process.env.PORT;
 const apiKey = process.env.token
@@ -109,6 +109,9 @@ app.put('/user', isAuthenticated, updateUser);
 // post proveedores:
 app.post('/suppliers', isAuthenticated, add);
 
+// post score:
+//app.post('/suppliers/:id/score', isAuthenticated, addScore);
+
 // get proveedores (sin autorizacion y con la opción de filtrar - tengo problemas con filtrar por nombre+media en score-)
 app.get('/suppliers', list);
 
@@ -121,15 +124,72 @@ app.post('/response-email', isAuthenticated, emailResponse)
 // enviar factura PT (no consigo convertirlo en una función que saque a events)
 
 //la API key no consigo cogerla de .env .Si la meto directamente, funciona. 
-
+/*
 const moment = require('moment')
 var http = require("https");
+const axios = require('axios');
+
+(async()=>{ 
+invoice = {
+    "invoice": {
+        "date": moment(),
+        "due_date": moment().add(15, 'Days'),
+        "reference": "",
+        "observations": "Observations",
+        "retention": "0",
+        "tax_exemption": "M01",
+        "sequence_id": "2/2020",
+        "manual_sequence_number": "1",
+        "client": {
+            "name": "clientePrueba",
+            "code": "A1",
+            "email": "foo@bar.com",
+            "address": "Saldanha",
+            "city": "Lisbon",
+            "postal_code": "1050-555",
+            "country": "Portugal",
+            "fiscal_id": "508000000",
+            "website": "www.website.com",
+            "phone": "910000000",
+            "fax": "210000000",
+            "observations": "Observations"
+        },
+        "items": [
+            {
+                "name": "Item Name",
+                "description": "Item Description",
+                "unit_price": "100",
+                "quantity": "5",
+                "unit": "service",
+                "discount": "50",
+                "tax": {
+                    "name": "IVA23"
+                }
+            }
+        ],
+        "mb_reference": "0",
+        "tax_exemption_reason": "M00",
+        "currency_code": "USD",
+        "rate": "1.23565"
+    }
+
+}
+
+
+   const response = await axios.post(`marosavatslu.app.invoicexpress.com/invoices.json?api_key=${process.env.apiKey}`, invoice)
+
+ })()
+
+
+*/
+
+
 
 var options = {
     "method": "POST",
     "hostname": "marosavatslu.app.invoicexpress.com",
     "port": null,
-    "path": `/invoices.json?api_key={apiKey}`,
+    "path": `/invoices.json?api_key=${process.env.apiKey}`,
     "headers": {
         "accept": "application/json",
         "content-type": "application/json"
@@ -232,7 +292,7 @@ return response
 
 
 
-
+/*
 
 app.use((error, req, res, next) => {
 
@@ -245,3 +305,4 @@ app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
 
+*/
